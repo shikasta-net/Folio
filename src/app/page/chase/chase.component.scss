@@ -1,0 +1,8 @@
+@import '../page.scss';
+
+:host {
+  display: block;
+  width: $pageWidth;
+  height: calc(#{$pageAspect} * #{$pageWidth});
+  background-color: lightgrey;
+}
