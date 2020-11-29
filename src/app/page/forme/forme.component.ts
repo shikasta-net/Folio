@@ -1,5 +1,10 @@
 import {
-  Component, ElementRef, Input, OnInit,
+  Component,
+  DoCheck,
+  ElementRef,
+  Input,
+  OnInit,
+  Renderer2,
 } from '@angular/core';
 
 @Component({
@@ -7,8 +12,8 @@ import {
   templateUrl: './forme.component.html',
   styleUrls: ['./forme.component.scss'],
 })
-export default class FormeComponent implements OnInit {
-  @Input() id!: number;
+export default class FormeComponent implements OnInit, DoCheck {
+  @Input() id!: string;
 
   @Input() top!: number;
 
@@ -18,13 +23,28 @@ export default class FormeComponent implements OnInit {
 
   @Input() height!: number;
 
-  constructor(private container: ElementRef) { }
+  constructor(
+    private renderer: Renderer2,
+    private container: ElementRef,
+  ) { }
 
   ngOnInit(): void {
     this.container.nativeElement.id = this.id;
-    this.container.nativeElement.style.top = `${this.top}px`;
-    this.container.nativeElement.style.left = `${this.left}px`;
-    this.container.nativeElement.style.width = `${this.width}px`;
-    this.container.nativeElement.style.height = `${this.height}px`;
+    this.setSize();
+    this.setLocation();
+  }
+
+  ngDoCheck(): void {
+    this.setSize();
+    this.setLocation();
+  }
+
+  private setLocation(): void {
+    this.renderer.setStyle(this.container.nativeElement, 'transform', `translate(${this.left}px,${this.top}px)`);
+  }
+
+  private setSize(): void {
+    this.renderer.setStyle(this.container.nativeElement, 'width', `${this.width}px`);
+    this.renderer.setStyle(this.container.nativeElement, 'height', `${this.height}px`);
   }
 }
